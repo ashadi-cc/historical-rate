@@ -11,7 +11,8 @@ import (
 const dbName = "./data/rate.db"
 
 type repoProvider struct {
-	db *gorm.DB
+	db       *gorm.DB
+	rateRepo repo.Rate
 }
 
 func (p *repoProvider) Init() error {
@@ -29,12 +30,13 @@ func (p *repoProvider) Init() error {
 	}
 
 	p.db = idb
+	p.rateRepo = NewRateRepo(p.db)
 
 	return nil
 }
 
 func (p *repoProvider) GetRateRepo() repo.Rate {
-	return NewRateRepo(p.db)
+	return p.rateRepo
 }
 
 func autoMigrate(db *gorm.DB) error {
