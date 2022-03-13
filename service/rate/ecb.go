@@ -44,16 +44,18 @@ func (e *ecb) Run(ctx context.Context) error {
 
 func (e *ecb) saveRate(ctx context.Context) error {
 	log.Println("[RATE]", "request rate and store to database")
-	rates, err := e.requestRate()
+	rates, err := e.requestRate(ctx)
 	if err != nil {
 		return err
 	}
 	return e.db.GetRateRepo().Save(rates.ToModel())
 }
 
-func (e *ecb) requestRate() (model.Rate, error) {
+func (e *ecb) requestRate(ctx context.Context) (model.Rate, error) {
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
 	var rate model.Rate
-	resp, err := doRequest(rateUrl)
+	resp, err := doRequest(ctx, rateUrl)
 	if err != nil {
 		return rate, err
 	}
