@@ -11,12 +11,13 @@ import (
 const dbName = "./data/rate.db"
 
 type repoProvider struct {
-	db       *gorm.DB
-	rateRepo repo.Rate
+	db          *gorm.DB
+	rateRepo    repo.Rate
+	isConnected bool
 }
 
 func (p *repoProvider) Init() error {
-	if p.db != nil {
+	if p.isConnected {
 		return nil
 	}
 
@@ -31,6 +32,7 @@ func (p *repoProvider) Init() error {
 
 	p.db = idb
 	p.rateRepo = NewRateRepo(p.db)
+	p.isConnected = true
 
 	return nil
 }
