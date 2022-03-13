@@ -27,10 +27,15 @@ func Register(name string, provider provider.Provider) {
 
 func Open(name string) (provider.Provider, error) {
 	providersMu.RLock()
+	defer providersMu.RUnlock()
 	provideri, ok := providers[name]
-	providersMu.RUnlock()
 	if !ok {
 		return nil, fmt.Errorf("unknown provider %q (forgotten import?)", name)
 	}
+
+	if err := provideri.Init(); err != nil {
+		return nil, err
+	}
+
 	return provideri, nil
 }

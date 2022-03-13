@@ -14,6 +14,25 @@ type repoProvider struct {
 	db *gorm.DB
 }
 
+func (p *repoProvider) Init() error {
+	if p.db != nil {
+		return nil
+	}
+
+	idb, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	if err := autoMigrate(idb); err != nil {
+		return err
+	}
+
+	p.db = idb
+
+	return nil
+}
+
 func (p *repoProvider) GetRateRepo() repo.Rate {
 	return NewRateRepo(p.db)
 }
@@ -23,15 +42,6 @@ func autoMigrate(db *gorm.DB) error {
 }
 
 func init() {
-	idb, err := gorm.Open(sqlite.Open(dbName), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-
-	if err := autoMigrate(idb); err != nil {
-		panic(err)
-	}
-
-	pr := &repoProvider{db: idb}
+	pr := &repoProvider{}
 	db.Register("sqlite", pr)
 }
