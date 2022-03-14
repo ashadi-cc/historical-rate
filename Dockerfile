@@ -14,6 +14,7 @@ RUN go build -o build/api cmd/main.go
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 COPY --from=build /app/build/api /app/api
+COPY --from=build /app/data /app/data
 WORKDIR /app
 
 EXPOSE 8001
