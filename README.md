@@ -4,8 +4,9 @@ API service to display latest EUR rates. rates raferences takes from Europe Bank
 # Installation 
 - make run - Running on development mode. make sure you have Golang installed on your sistem 
 
-# Build container 
-- make container - Build docker container
+# Build and run app in container 
+- make container - build docker container
+- docker run -p 8001:8001 your_build_image_tag
 
 # API Endpoint 
 - GET localhost:8001/rates/latest
