@@ -12,7 +12,6 @@ func doRequest(ctx context.Context, url string) (*http.Response, error) {
 	}
 
 	req = req.WithContext(ctx)
-
 	req.Header.Set("cache-control", "no-cache")
 
 	resp, err := http.DefaultClient.Do(req)
